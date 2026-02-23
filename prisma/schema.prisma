@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                   String   @id @default(cuid())
+  name                 String?
+  email                String?  @unique
+  image                String?
+  githubId             String   @unique
+  accessToken          String
+  plan                 String   @default("free")
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+  repos                Repo[]
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+model Repo {
+  id            String   @id @default(cuid())
+  name          String
+  fullName      String
+  owner         String
+  defaultBranch String
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  scans         Scan[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Scan {
+  id           String   @id @default(cuid())
+  repoId       String
+  repo         Repo     @relation(fields: [repoId], references: [id])
+  overallScore Float
+  totalFiles   Int
+  redFiles     Int
+  yellowFiles  Int
+  greenFiles   Int
+  fileResults  Json
+  contributors Json
+  completedAt  DateTime @default(now())
+}
+
