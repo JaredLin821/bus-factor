@@ -33,6 +33,7 @@ model Repo {
   scans         Scan[]
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  @@unique([fullName, userId])
 }
 
 model Scan {

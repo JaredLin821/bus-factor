@@ -1,5 +1,6 @@
 import {auth} from '@/auth'
 import {redirect} from 'next/navigation'
+import {connectRepo} from '@/app/actions/connectRepo';
 
 export default async function DashboardPage() {
     const session = await auth();
@@ -22,12 +23,13 @@ export default async function DashboardPage() {
                         <h2 className="font-semibold">{repo.full_name}</h2>
                         <p className ="text-gray-400 text-sm mt-1">{repo.description ?? "No description available"}</p>
                     </div>
-                    <button className="bg-blue-600 hover:bg-blue-700 text-sm px-4 py-2 rounded-lg">
-                        Connect
-                    </button>
+                    <form action={connectRepo.bind(null, repo.name, repo.full_name, repo.owner.login, repo.default_branch)}>
+                        <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+                            Connect
+                        </button>
+                    </form>
                 </div>
             ))}
         </div>
     )
-
 }
